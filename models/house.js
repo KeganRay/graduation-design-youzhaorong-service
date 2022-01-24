@@ -17,7 +17,7 @@ const houseSchema = new mongoose.Schema({
 })
 
 // 建立用户数据库模型
-module.exports = mongoose.model("house",userSchema);
+module.exports = mongoose.model("house",houseSchema);
 
 
 

@@ -9,7 +9,7 @@ let app = express();
 
 let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
-
+let houseRouter = require('./routes/house')
 
 
 /*********************************************************************************************************/
@@ -55,6 +55,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/getuser', usersRouter)
+app.use('/gethouse',houseRouter)
 
 
 // catch 404 and forward to error handler
