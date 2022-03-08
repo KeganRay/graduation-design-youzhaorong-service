@@ -10,6 +10,7 @@ let app = express();
 let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
 let houseRouter = require('./routes/house')
+let helloRouter = require('./routes/hello')
 
 
 /*********************************************************************************************************/
@@ -17,21 +18,21 @@ let houseRouter = require('./routes/house')
 //连接MongoDB数据库
 mongoose.connect('mongodb://localhost:27017/graduation-design');
 
+//成功连接数据库
 mongoose.connection.on("connected", function () {
     console.log("MongoDB connected success.")
 });
 
+//连接数据库失败
 mongoose.connection.on("error", function () {
     console.log("MongoDB connected fail.")
 });
 
+//断开连接数据库
 mongoose.connection.on("disconnected", function () {
     console.log("MongoDB connected disconnected.")
 });
 
-// mongoose.connect('mongodb://localhost:1011/graduation-design')     //连接本地数据库blog
-//
-// let db = mongoose.connection;
 
 // // 连接成功
 // db.on('open', function () {
@@ -54,8 +55,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/getuser', usersRouter)
-app.use('/gethouse',houseRouter)
+app.use('/user', usersRouter)
+app.use('/house',houseRouter)
+app.use('/hello',helloRouter)
 
 
 // catch 404 and forward to error handler
