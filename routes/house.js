@@ -90,6 +90,7 @@ router.post('/update-house', async (req, res, next) => {
   })
 })
 
+//查询房东旗下的房源列表
 router.get('/queryUserHouseList', async (req, res, next) => {
   const {userId} = req.query//根据房东的id查数据库的房源表
   console.log(userId);
@@ -130,32 +131,18 @@ router.get('/query-by-houseId', async (req, res, next) => {
 //增加房屋水费
 router.post('/submit-water-price', async (req, res, next) => {
   const param = req.body
-  console.log(param);
   const {houseId} = req.body
-  houseModel.findOne({houseId}, {}, (err, doc) => {
+  houseModel.updateOne({houseId}, {$push: {'waterPrice': param}}, {}, (err, doc) => {
     if (err) {
       res.json({
         code: -1,
         msg: err.message
       });
     } else {
-      if (doc) {
-        console.log(doc);
-        const updatedPrice = [...doc.waterPrice, param]
-        houseModel.updateOne({houseId}, {waterPrice: updatedPrice}, (error, doc) => {
-          if (error) {
-            error.json({
-              code: -1,
-              msg: error.message
-            });
-          } else {
-            res.json({
-              code: 0,
-              msg: '更新成功'
-            });
-          }
-        })
-      }
+      res.json({
+        code: 0,
+        msg: '水费更新成功'
+      });
     }
   })
 })
@@ -164,29 +151,17 @@ router.post('/submit-water-price', async (req, res, next) => {
 router.post('/submit-electricity-price', async (req, res, next) => {
   const param = req.body
   const {houseId} = req.body
-  houseModel.findOne({houseId}, {}, (err, doc) => {
+  houseModel.updateOne({houseId}, {$push: {'elePrice': param}}, {}, (err, doc) => {
     if (err) {
       res.json({
         code: -1,
         msg: err.message
       });
     } else {
-      if (doc) {
-        const updatedPrice = [...doc.elePrice, param]
-        houseModel.updateOne({houseId}, {elePrice: updatedPrice}, (error, doc) => {
-          if (error) {
-            error.json({
-              code: -1,
-              msg: error.message
-            });
-          } else {
-            res.json({
-              code: 0,
-              msg: '更新成功'
-            });
-          }
-        })
-      }
+      res.json({
+        code: 0,
+        msg: '电费更新成功'
+      });
     }
   })
 })
@@ -194,8 +169,8 @@ router.post('/submit-electricity-price', async (req, res, next) => {
 
 //修改房屋水电标准
 router.post('/submit-water-electricity-unit', async (req, res, next) => {
-  const {houseId,waterUnitPrice,electricityUnitPrice} = req.body
-  houseModel.updateOne({houseId}, {waterUnitPrice,electricityUnitPrice}, (err, doc) => {
+  const {houseId, waterUnitPrice, electricityUnitPrice} = req.body
+  houseModel.updateOne({houseId}, {waterUnitPrice, electricityUnitPrice}, (err, doc) => {
     if (err) {
       res.json({
         code: -1,
@@ -209,4 +184,61 @@ router.post('/submit-water-electricity-unit', async (req, res, next) => {
     }
   })
 })
-module.exports = router;
+
+//提交房屋公告
+router.post('/submit-announcement', async (req, res, next) => {
+  const {houseId, announcement} = req.body
+  houseModel.updateOne({houseId}, {announcement}, (err, doc) => {
+    if (err) {
+      res.json({
+        code: -1,
+        msg: err.message
+      })
+    } else {
+      res.json({
+        code: 0,
+        msg: '公告更新成功！'
+      });
+    }
+  })
+})
+
+//租客根据账号查询房子
+router.get('/tenantFindHouseByAccount', async (req, res, next) => {
+  const {account} = req.query
+  houseModel.findOne({'tenantMessage.tenantPhone': account}, (err, doc) => {
+    if (err) {
+      res.json({
+        code: -1,
+        msg: err.message
+      })
+    } else {
+      res.json({
+        code: 0,
+        data: doc
+      })
+    }
+  })
+})
+
+//给房东的消息列表添加消息
+router.post('/submit-message', async (req, res, next) => {
+      const param = req.body
+      const {landlordId} = req.body
+      userModel.updateOne({userId: landlordId}, {$push: {'notices': param}}, {}, (error, doc) => {
+        if (error) {
+          res.json({
+            code: -1,
+            msg: error.message
+          })
+        } else {
+          res.json({
+            code: 0,
+            msg: '发布信息成功！'
+          })
+        }
+      })
+    }
+)
+
+module.exports = router

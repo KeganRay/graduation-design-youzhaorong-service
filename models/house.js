@@ -33,7 +33,8 @@ const houseSchema = new mongoose.Schema({
       eleNum:Number,//用电量
       elePrice: Number//电费
     }
-  ]
+  ],
+  announcement:String
 })
 
 // 建立用户数据库模型
