@@ -18,10 +18,12 @@ const userSchema = new mongoose.Schema({
   landlordMessage: Object,//房东的信息
   notices: [
     {
+      noticeId:String,//通知ID
+      avatar:String,//logo
       title: String,//标题
       description:String,//描述
       noticeType:String,//通知类型 message为租客给房东发的信息 feeInfo为缴费信息
-      status:Number,//是否已读 1未读 0已读
+      isRead:Boolean,//是否已读
       date:String//时间
     }
   ]

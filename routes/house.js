@@ -223,8 +223,9 @@ router.get('/tenantFindHouseByAccount', async (req, res, next) => {
 
 //给房东的消息列表添加消息
 router.post('/submit-message', async (req, res, next) => {
-      const param = req.body
+      const param = {noticeId: nanoid(), ...req.body}
       const {landlordId} = req.body
+
       userModel.updateOne({userId: landlordId}, {$push: {'notices': param}}, {}, (error, doc) => {
         if (error) {
           res.json({
