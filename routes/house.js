@@ -24,7 +24,7 @@ router.post('/create-house', async (req, res, next) => {
         (error, updateResult) => {
           console.log(updateResult);
           //有更改才创建房子
-          if (updateResult.matchedCount === 1) {
+          if (updateResult.ok === 1) {
             //创建房子
             houseModel.create(param, (err) => {
               if (err) {
@@ -236,6 +236,27 @@ router.post('/submit-message', async (req, res, next) => {
           res.json({
             code: 0,
             msg: '发布信息成功！'
+          })
+        }
+      })
+    }
+)
+
+//租客缴纳费用
+router.post('/pay-fee', async (req, res, next) => {
+      const param = {noticeId: nanoid(), ...req.body}
+      const {landlordId} = req.body
+
+      userModel.updateOne({userId: landlordId}, {$push: {'notices': param}}, {}, (error, doc) => {
+        if (error) {
+          res.json({
+            code: -1,
+            msg: error.message
+          })
+        } else {
+          res.json({
+            code: 0,
+            msg: '缴纳成功！'
           })
         }
       })

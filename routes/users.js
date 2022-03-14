@@ -106,7 +106,8 @@ router.get('/getNotices', async (req, res, next) => {
 router.post('/handle-read-notice', async (req, res, next) => {
   const {userId, noticeId} = req.body
   userModels.updateOne({userId,"notices.noticeId":noticeId}, {$set: {"notices.$.isRead":true}}, (err, doc) => {
-    if (doc.modifiedCount===1) {
+    console.log(doc)
+    if (doc.ok===1) {
       res.json({
         code: 0,
         data: "已阅读此信息"
@@ -120,5 +121,4 @@ router.post('/handle-read-notice', async (req, res, next) => {
   })
 })
 
-router.post()
 module.exports = router;

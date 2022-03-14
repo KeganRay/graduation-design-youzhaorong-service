@@ -13,6 +13,7 @@ const houseSchema = new mongoose.Schema({
   landlordPhone: String,//房东联系电话
   landlordId: String,//房东的Id
   housePic: Array,//房子的照片
+  payPic:String,// 收款码照片的ID
   tenantMessage: Object,//租客信息
   waterUnitPrice: Number,//每吨水费
   electricityUnitPrice: Number,//每吨电费
