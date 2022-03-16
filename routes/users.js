@@ -121,4 +121,23 @@ router.post('/handle-read-notice', async (req, res, next) => {
   })
 })
 
+//更新用户信息
+router.post('/updateUserInfo',async (req,res,next)=>{
+  console.log(req.body);
+  const {userId}=  req.body
+  userModels.updateOne({userId},{...req.body},(err,doc)=>{
+    if(doc.ok===1){
+      res.json({
+        code: 0,
+        data: "更新成功！"
+      });
+    }else {
+      res.json({
+        code: -1,
+        message: '系统出现故障，请联系开发人员！'
+      })
+    }
+  })
+})
+
 module.exports = router;
