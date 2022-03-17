@@ -46,10 +46,10 @@ router.post('/register', function (req, res, next) {
 });
 
 /* 通过用户id查询用户 */
-router.get('/querybyid', async (req, res, next) => {
+router.get('/query-by-userId', async (req, res, next) => {
   console.log(req.query);
   const {userId} = req.query//
-  userModels.findOne({_id}, function (err, doc) {
+  userModels.findOne({userId}, function (err, doc) {
     console.log(doc);
     if (doc) {
       res.json({
@@ -61,6 +61,24 @@ router.get('/querybyid', async (req, res, next) => {
         code: -1,
         message: '暂无该数据！'
       })
+    }
+  })
+})
+
+router.get('/query-all-users', async (req, res, next) => {
+  userModels.find((err, doc) => {
+    if (doc) {
+      if (doc) {
+        res.json({
+          code: 0,
+          data: doc
+        });
+      } else if (err) {
+        res.json({
+          code: -1,
+          message: '系统故障，请联系开发人员！'
+        })
+      }
     }
   })
 })
@@ -105,9 +123,9 @@ router.get('/getNotices', async (req, res, next) => {
 //根据消息Id设为已读
 router.post('/handle-read-notice', async (req, res, next) => {
   const {userId, noticeId} = req.body
-  userModels.updateOne({userId,"notices.noticeId":noticeId}, {$set: {"notices.$.isRead":true}}, (err, doc) => {
+  userModels.updateOne({userId, "notices.noticeId": noticeId}, {$set: {"notices.$.isRead": true}}, (err, doc) => {
     console.log(doc)
-    if (doc.ok===1) {
+    if (doc.ok === 1) {
       res.json({
         code: 0,
         data: "已阅读此信息"
@@ -122,16 +140,16 @@ router.post('/handle-read-notice', async (req, res, next) => {
 })
 
 //更新用户信息
-router.post('/updateUserInfo',async (req,res,next)=>{
+router.post('/updateUserInfo', async (req, res, next) => {
   console.log(req.body);
-  const {userId}=  req.body
-  userModels.updateOne({userId},{...req.body},(err,doc)=>{
-    if(doc.ok===1){
+  const {userId} = req.body
+  userModels.updateOne({userId}, {...req.body}, (err, doc) => {
+    if (doc.ok === 1) {
       res.json({
         code: 0,
         data: "更新成功！"
       });
-    }else {
+    } else {
       res.json({
         code: -1,
         message: '系统出现故障，请联系开发人员！'
@@ -139,5 +157,26 @@ router.post('/updateUserInfo',async (req,res,next)=>{
     }
   })
 })
+
+//删除指定用户信息
+router.post('/delete-user', async (req, res, next) => {
+  console.log(req.body);
+  const {userId} = req.body
+  userModels.remove({userId}, (err, doc) => {
+    console.log(doc);
+    if (doc.deletedCount) {
+      res.json({
+        code: 0,
+        message: "删除成功！"
+      });
+    } else {
+      res.json({
+        code: -1,
+        message: '系统出现故障，请联系开发人员！'
+      })
+    }
+  })
+})
+
 
 module.exports = router;
