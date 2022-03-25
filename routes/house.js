@@ -1,7 +1,7 @@
 let express = require('express');
 let router = express.Router();
-let houseModel = require('../models/house')
 let userModel = require('../models/user')
+let houseModel = require('../models/house')
 let {nanoid} = require('nanoid')
 
 //增加房源

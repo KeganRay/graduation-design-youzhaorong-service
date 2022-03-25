@@ -108,8 +108,8 @@ router.get('/getImages/:_id', (req, res) => {
       console.log(file);
       //是否是图片格式
       if (file.contentType === "image/png" || file.contentType === "image/jpg" || file.contentType === "image/jpeg") {
-        const readStream = gfs.createReadStream(file._id)
-        readStream.pipe(res)
+        const readStream = gfs.createReadStream(file._id)//创建一个可读流
+        readStream.pipe(res)//把可读流的东西弄到可写流上
       }else{
         res.status(404).json({err: "不存在此文件!"})
       }
