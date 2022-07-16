@@ -35,7 +35,7 @@ const houseSchema = new mongoose.Schema({
       elePrice: Number//电费
     }
   ],
-  announcement:String
+  announcement:String//公告
 })
 
 // 建立用户数据库模型

@@ -2,7 +2,11 @@ let {nanoid} = require('nanoid')
 let express = require('express');
 let router = express.Router();
 let userModels = require('../models/user')
+let {createToken,jwtAuth} = require('../jwt/token')
 
+//导入用于生成JWT字符串的包
+const jwt = require('jsonwebtoken');
+//导入用于将客户端发送过来的JWT字符串解析还原成JSON对象的包
 
 // 登录接口
 router.post('/login', async (req, res, next) => {
@@ -10,9 +14,13 @@ router.post('/login', async (req, res, next) => {
   console.log(account, password);
   userModels.findOne({account, password}, function (err, doc) {
     if (doc) {
+      let tokenStr = createToken({account,password})
+      res.cookie("token",tokenStr,{maxAge:1000*3600*24*7,httpOnly:true,path:'/'})//设置JWT在cookie中
+      res.cookie("hhh","123")//设置JWT在cookie中
       res.json({
         code: 0,
-        data: doc
+        data: doc,
+        token:tokenStr
       });
     } else {
       res.json({
@@ -85,6 +93,7 @@ router.get('/query-all-users', async (req, res, next) => {
 
 /* 通过用户身份证查询用户 */
 router.get('/query-by-idCardNmber', async (req, res, next) => {
+
   const {IDcardNumber} = req.query//身份证
   userModels.find({IDcardNumber}, function (err, doc) {
     console.log(doc);

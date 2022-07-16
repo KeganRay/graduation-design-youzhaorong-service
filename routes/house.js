@@ -11,6 +11,7 @@ router.post('/create-house', async (req, res, next) => {
   const {houseName, houseAddress} = param
   const {tenantPhone, tenantName, tenantIDcardNumber} = param.tenantMessage//租客信息
   const {landlordName, landlordPhone, landlordId} = param//房东信息
+  console.log(tenantPhone, tenantName, tenantIDcardNumber);
   if (houseName && houseAddress && tenantPhone && tenantName) {
     //在用户的数据表找到电话以及名字匹配的以及用户id匹配的然后给租客添加房东的id，电话号码，以及名字
     userModel.updateOne({name: tenantName, phone: tenantPhone, IDcardNumber: tenantIDcardNumber},
@@ -24,7 +25,7 @@ router.post('/create-house', async (req, res, next) => {
         (error, updateResult) => {
           console.log(updateResult);
           //有更改才创建房子
-          if (updateResult.ok === 1) {
+          if (updateResult.nModified === 1) {
             //创建房子
             houseModel.create(param, (err) => {
               if (err) {
@@ -93,7 +94,6 @@ router.post('/update-house', async (req, res, next) => {
 //查询房东旗下的房源列表
 router.get('/queryUserHouseList', async (req, res, next) => {
   const {userId} = req.query//根据房东的id查数据库的房源表
-  console.log(userId);
   houseModel.find({landlordId: userId}, function (err, doc) {
     if (doc) {
       res.json({
@@ -112,7 +112,6 @@ router.get('/queryUserHouseList', async (req, res, next) => {
 //查询房源
 router.get('/query-by-houseId', async (req, res, next) => {
   const {houseId} = req.query//根据房源的名字查数据库的房源表
-  console.log(houseId);
   houseModel.findOne({houseId}, function (err, doc) {
     if (doc) {
       res.json({
@@ -227,6 +226,7 @@ router.post('/submit-message', async (req, res, next) => {
       const {landlordId} = req.body
 
       userModel.updateOne({userId: landlordId}, {$push: {'notices': param}}, {}, (error, doc) => {
+        console.log(error);
         if (error) {
           res.json({
             code: -1,

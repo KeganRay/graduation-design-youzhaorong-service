@@ -8,12 +8,13 @@ let mongoose = require('mongoose')
 let app = express();
 let bodyParser = require('body-parser')
 const methodOverride = require('method-override')
-
+const { expressjwt } = require('express-jwt')
 let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
 let houseRouter = require('./routes/house')
 let uploadRouter = require('./routes/upload')
-
+let {createToken,jwtAuth} = require('./jwt/token')
+let {secretKey} = require('./jwt/secretKey')
 
 /*********************************************************************************************************/
 //连接数据库
@@ -56,6 +57,10 @@ mongoose.connection.on("disconnected", function () {
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+//校验jwt
+app.use(jwtAuth)
+// app.use(expressJWT({ secret: secretKey,algorithms: ['HS256'] }).unless({path: ['/','/api/user/login','/api/user/register']}));
+
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -89,7 +94,10 @@ app.use(function (err, req, res, next) {
 });
 
 //允许跨域
-app.use(cors())
+// app.use(cors())
+
+
+
 // app.all('*', function (req, res, next) {
 //     res.header('Access-Control-Allow-Origin', '*');
 //     res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With');
